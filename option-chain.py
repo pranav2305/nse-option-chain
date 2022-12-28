@@ -29,7 +29,7 @@ def get_option_chain(symbol):
 
 with xw.App() as app:
     row = 1
-    book = app.books.open('test.xlsx')
+    book = app.books.open('option-chain.xlsx')
     while True:
         while (book.sheets[0].range('A' + str(row)).value != None):
             symbol = book.sheets[0].range('A' + str(row)).value

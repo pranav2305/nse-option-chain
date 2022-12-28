@@ -30,6 +30,12 @@ def get_option_chain(symbol):
 with xw.App() as app:
     row = 1
     book = app.books.open('option-chain.xlsx')
+    book.sheets[1].range('A1').value = 'Symbol'
+    book.sheets[1].range('B1').value = 'Strike Price'
+    book.sheets[1].range('C1').value = 'Expiry Date'
+    book.sheets[1].range('D1').value = 'Stock Price'
+    book.sheets[1].range('E1').value = 'IV'
+    book.sheets[1].range('F1').value = 'Last Price'
     while True:
         while (book.sheets[0].range('A' + str(row)).value != None):
             symbol = book.sheets[0].range('A' + str(row)).value
@@ -38,11 +44,9 @@ with xw.App() as app:
             try:
                 expiry_date = expiry_date.strftime('%d-%b-%Y')
                 stock_price = nse.get_quote(symbol)['lastPrice']
-                print(symbol, strike_price, expiry_date)
                 opt_chain = get_option_chain(symbol)
                 for opt in opt_chain['records']['data']:
                     if (opt['expiryDate'] == expiry_date and float(opt['strikePrice']) == float(strike_price)):
-                        print(opt)
                         book.sheets[1].range('A' + str(row+1)).value = symbol
                         book.sheets[1].range('B' + str(row+1)).value = strike_price
                         book.sheets[1].range('C' + str(row+1)).value = expiry_date
@@ -52,11 +56,5 @@ with xw.App() as app:
             except:
                 print("Error fetching data for " + symbol + " " + str(strike_price) + " " + str(expiry_date))
             row += 1
-        book.sheets[1].range('A1').value = 'Symbol'
-        book.sheets[1].range('B1').value = 'Strike Price'
-        book.sheets[1].range('C1').value = 'Expiry Date'
-        book.sheets[1].range('D1').value = 'Stock Price'
-        book.sheets[1].range('E1').value = 'IV'
-        book.sheets[1].range('F1').value = 'Last Price'
         book.save()
         sleep(5)
